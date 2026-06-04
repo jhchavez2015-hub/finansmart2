@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  CreditCard, 
-  TrendingDown, 
-  DollarSign, 
-  Plus, 
-  Trash2, 
+import {
+  CreditCard,
+  TrendingDown,
+  DollarSign,
+  Plus,
+  Trash2,
   FileText,
   BarChart3,
   Zap,
@@ -12,7 +12,15 @@ import {
   Target,
   Globe,
   AlertTriangle,
-  ArrowRight
+  ArrowRight,
+  ShieldAlert,
+  CheckCircle2,
+  RotateCcw,
+  Download,
+  ChevronRight,
+  Info,
+  TrendingUp,
+  Wallet
 } from 'lucide-react';
 
 // ==========================================
@@ -21,7 +29,7 @@ import {
 const translations = {
   es: {
     title: "FinanSmart",
-    version: "V4.4 Hybrid Pro",
+    version: "V4.5 Hybrid Pro",
     tabFico: "Analizador FICO Dual",
     tabDeudas: "Acelerador de Deudas",
     configTitle: "Configuración de Perfil Crediticio",
@@ -33,6 +41,7 @@ const translations = {
     lblInquiries: "5. Consultas Recientes (New Credit / Inquiries)",
     selDefault: "Selecciona una opción...",
     calcScore: "Calcular Ambos Modelos",
+    resetForm: "Reiniciar Formulario",
     waitingData: "Esperando datos de entrada",
     waitingSub: "Completa el formulario para generar la auditoría de crédito simultánea.",
     reportTitle: "Auditoría Dual de Puntuación FICO",
@@ -52,6 +61,7 @@ const translations = {
     lblInyeccionMensual: "Inyección de Pago Extra Mensual",
     lblInyeccionUnica: "Inyección de Pago Único (Sola vez)",
     btnCalcularDeudas: "Calcular Estrategia de Amortización",
+    btnExportar: "Exportar Reporte",
     ahorroInteres: "Ahorro en Intereses",
     tiempoSalvado: "Tiempo Salvado",
     resumenProyeccion: "Resumen de Proyección Consolidada",
@@ -61,15 +71,14 @@ const translations = {
     interesAce: "Interés Total (Plan Acelerado):",
     alertaAmortizacion: "¡Peligro de Amortización Negativa!",
     alertaAmortizacionDesc: "El pago mínimo ingresado es demasiado bajo en alguna de tus cuentas. El balance crecerá en lugar de disminuir debido a los intereses acumulados.",
-    footerText: "© 2026 FinanSmart Professional SPA • Analizador Financiero de Datos Tendenciales",
+    footerText: "© 2025 FinanSmart Professional SPA • Analizador Financiero de Datos Tendenciales",
+    footerDisclaimer: "Solo para propósitos educativos. No constituye asesoría financiera.",
     meses: "meses",
-    // Rangos Nominales FICO
     r_exceptional: "Excepcional",
     r_verygood: "Muy Bueno",
     r_good: "Bueno",
     r_fair: "Regular",
     r_poor: "Pobre",
-    // Opciones Dropdowns
     h_excelente: "Always on time (Clean History)",
     h_bueno: "An isolated missed payment",
     h_regular: "Frequent 30-60 days late payments",
@@ -87,10 +96,18 @@ const translations = {
     i_0: "0 Inquiries en los últimos 6 meses",
     i_pocas: "Pocas consultas (1 a 3 aplicaciones)",
     i_muchas: "Búsqueda intensiva (Más de 4 consultas)",
+    // Descargo de responsabilidad
+    disclaimerTitle: "Descargo de Responsabilidad",
+    disclaimerBody1: "FinanSmart es una herramienta educativa e informativa diseñada para ayudarte a entender conceptos financieros básicos como la puntuación FICO y la gestión de deudas.",
+    disclaimerBody2: "La información proporcionada por esta aplicación NO constituye asesoría financiera, legal, ni fiscal profesional. Los cálculos son aproximaciones basadas en modelos simplificados y pueden no reflejar con exactitud tu situación crediticia real.",
+    disclaimerBody3: "Los resultados del Analizador FICO son estimaciones educativas. Tu puntaje real puede variar significativamente dependiendo de múltiples factores evaluados directamente por las agencias de crédito (Experian, Equifax, TransUnion).",
+    disclaimerBody4: "Antes de tomar decisiones financieras importantes, consulta siempre con un asesor financiero certificado (CFP), un consejero de crédito acreditado, o el profesional correspondiente en tu país.",
+    disclaimerAccept: "Entiendo y acepto los términos",
+    disclaimerEducational: "🎓 Solo uso educativo • No es asesoría financiera",
   },
   en: {
     title: "FinanSmart",
-    version: "V4.4 Hybrid Pro",
+    version: "V4.5 Hybrid Pro",
     tabFico: "Dual FICO Analyzer",
     tabDeudas: "Debt Accelerator",
     configTitle: "Credit Profile Configuration",
@@ -102,6 +119,7 @@ const translations = {
     lblInquiries: "5. New Credit (Recent Hard Inquiries)",
     selDefault: "Select an option...",
     calcScore: "Calculate Both Models",
+    resetForm: "Reset Form",
     waitingData: "Waiting for Input Data",
     waitingSub: "Complete the form to generate the simultaneous credit audit.",
     reportTitle: "Dual FICO Score Audit Report",
@@ -121,6 +139,7 @@ const translations = {
     lblInyeccionMensual: "Monthly Extra Payment Injection",
     lblInyeccionUnica: "Lump-Sum Single Injection",
     btnCalcularDeudas: "Calculate Amortization Strategy",
+    btnExportar: "Export Report",
     ahorroInteres: "Interest Savings",
     tiempoSalvado: "Time Saved",
     resumenProyeccion: "Consolidated Projection Summary",
@@ -130,15 +149,14 @@ const translations = {
     interesAce: "Total Interest (Accelerated Plan):",
     alertaAmortizacion: "Negative Amortization Hazard!",
     alertaAmortizacionDesc: "The minimum payment entered is too low on one or more accounts. The balance will grow instead of decreasing due to accumulated interest.",
-    footerText: "© 2026 FinanSmart Professional SPA • Trended Data Financial Systems",
+    footerText: "© 2025 FinanSmart Professional SPA • Trended Data Financial Systems",
+    footerDisclaimer: "For educational purposes only. Not financial advice.",
     meses: "months",
-    // FICO Nominal Ranges
     r_exceptional: "Exceptional",
     r_verygood: "Very Good",
     r_good: "Good",
     r_fair: "Fair",
     r_poor: "Poor",
-    // Dropdown Options
     h_excelente: "Always on time (Clean History)",
     h_bueno: "An isolated missed payment",
     h_regular: "Frequent 30-60 days late payments",
@@ -156,83 +174,163 @@ const translations = {
     i_0: "0 Inquiries in the last 6 months",
     i_pocas: "Few inquiries (1 to 3 applications)",
     i_muchas: "Intensive search (4+ inquiries)",
+    disclaimerTitle: "Disclaimer",
+    disclaimerBody1: "FinanSmart is an educational and informational tool designed to help you understand basic financial concepts such as FICO scoring and debt management.",
+    disclaimerBody2: "The information provided by this application does NOT constitute professional financial, legal, or tax advice. Calculations are approximations based on simplified models and may not accurately reflect your real credit situation.",
+    disclaimerBody3: "FICO Analyzer results are educational estimates. Your actual score may vary significantly depending on multiple factors evaluated directly by credit bureaus (Experian, Equifax, TransUnion).",
+    disclaimerBody4: "Before making important financial decisions, always consult a Certified Financial Planner (CFP), an accredited credit counselor, or the appropriate professional in your country.",
+    disclaimerAccept: "I understand and accept the terms",
+    disclaimerEducational: "🎓 Educational use only • Not financial advice",
   }
 };
 
+// ==========================================
+// COMPONENTE: MODAL DE DESCARGO
+// ==========================================
+function DisclaimerModal({ lang, onAccept }) {
+  const t = translations[lang];
+  return (
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4"
+      style={{ background: 'rgba(0,0,0,0.75)', backdropFilter: 'blur(6px)' }}>
+      <div className="bg-slate-900 border border-amber-500/40 rounded-2xl max-w-lg w-full shadow-2xl overflow-hidden"
+        style={{ animation: 'fadeInUp 0.3s ease-out' }}>
+        {/* Header */}
+        <div className="bg-gradient-to-r from-amber-500/20 to-orange-500/10 border-b border-amber-500/30 px-6 py-4 flex items-center gap-3">
+          <div className="bg-amber-500/20 p-2 rounded-xl border border-amber-500/30">
+            <ShieldAlert className="h-5 w-5 text-amber-400" />
+          </div>
+          <div>
+            <h2 className="text-sm font-bold text-amber-300 tracking-wide">{t.disclaimerTitle}</h2>
+            <p className="text-[10px] text-amber-400/70">{t.disclaimerEducational}</p>
+          </div>
+        </div>
+        {/* Body */}
+        <div className="px-6 py-5 space-y-3 max-h-80 overflow-y-auto">
+          {[t.disclaimerBody1, t.disclaimerBody2, t.disclaimerBody3, t.disclaimerBody4].map((text, i) => (
+            <div key={i} className="flex gap-3">
+              <span className="flex-shrink-0 w-5 h-5 rounded-full bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-[10px] font-bold text-amber-400 mt-0.5">{i + 1}</span>
+              <p className="text-[12px] text-slate-300 leading-relaxed">{text}</p>
+            </div>
+          ))}
+        </div>
+        {/* Footer */}
+        <div className="px-6 pb-5 pt-2 border-t border-slate-800">
+          <button
+            onClick={onAccept}
+            className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-900 font-bold py-3 rounded-xl text-sm transition-all shadow-lg flex items-center justify-center gap-2 active:scale-[0.98]">
+            <CheckCircle2 className="h-4 w-4" />
+            {t.disclaimerAccept}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ==========================================
+// COMPONENTE: BADGE DE SCORE CON COLOR
+// ==========================================
+function ScoreBadge({ score, label, color }) {
+  const getGradient = () => {
+    if (score >= 800) return 'from-emerald-500 to-teal-500';
+    if (score >= 740) return 'from-teal-500 to-cyan-500';
+    if (score >= 670) return 'from-amber-500 to-yellow-500';
+    if (score >= 580) return 'from-orange-500 to-amber-500';
+    return 'from-rose-500 to-red-500';
+  };
+
+  const getArcColor = () => {
+    if (score >= 800) return '#10b981';
+    if (score >= 740) return '#14b8a6';
+    if (score >= 670) return '#f59e0b';
+    if (score >= 580) return '#f97316';
+    return '#f43f5e';
+  };
+
+  const pct = Math.min(100, Math.max(0, ((score - 300) / 550) * 100));
+  const radius = 36;
+  const circ = 2 * Math.PI * radius;
+  const dash = (pct / 100) * circ * 0.75;
+
+  return (
+    <div className="bg-slate-950/60 border border-slate-800 p-4 rounded-xl flex flex-col items-center">
+      <span className={`text-[10px] font-bold uppercase tracking-wider ${color}`}>{label}</span>
+      <div className="relative mt-2">
+        <svg width="100" height="70" viewBox="0 0 100 70">
+          <path d="M 10 65 A 40 40 0 0 1 90 65" fill="none" stroke="#1e293b" strokeWidth="8" strokeLinecap="round" />
+          <path d="M 10 65 A 40 40 0 0 1 90 65" fill="none" stroke={getArcColor()} strokeWidth="8"
+            strokeLinecap="round" strokeDasharray={`${dash} ${circ}`}
+            style={{ transition: 'stroke-dasharray 0.8s ease-out' }} />
+        </svg>
+        <div className="absolute inset-0 flex flex-col items-center justify-center pt-3">
+          <span className={`text-3xl font-black bg-gradient-to-r ${getGradient()} bg-clip-text text-transparent`}>{score}</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ==========================================
+// APP PRINCIPAL
+// ==========================================
 export default function App() {
   const [lang, setLang] = useState('es');
   const t = translations[lang];
-
+  const [showDisclaimer, setShowDisclaimer] = useState(false);
   const [activeTab, setActiveTab] = useState('score');
-  
-  // --- ESTADOS: SIMULADOR Y REPORTE ---
+
   const [scoreAnswers, setScoreAnswers] = useState({
-    historial: '',
-    utilizacion: 'auto', 
-    antiguedad: '',
-    tipos: '',
-    consultas: ''
+    historial: '', utilizacion: 'auto', antiguedad: '', tipos: '', consultas: ''
   });
   const [reporteScore, setReporteScore] = useState(null);
 
-  // --- INICIALIZAR ESTADO USANDO LOCALSTORAGE ---
   const [debts, setDebts] = useState(() => {
-    const savedDebts = localStorage.getItem('finansmart_debts');
-    if (savedDebts) {
-      try {
-        return JSON.parse(savedDebts);
-      } catch (e) {
-        console.error("Error cargando deudas de localStorage", e);
-      }
-    }
+    const saved = localStorage.getItem('finansmart_debts');
+    if (saved) { try { return JSON.parse(saved); } catch (e) {} }
     return [
       { id: 1, nombre: 'Credit Card A', balance: '5000', interesAnual: '24', pagoMensual: '200' },
-      { id: 2, font: 'Business Line', balance: '12000', interesAnual: '14', pagoMensual: '350' }
+      { id: 2, nombre: 'Business Line', balance: '12000', interesAnual: '14', pagoMensual: '350' }
     ];
   });
 
-  const [globalPagoExtra, setGlobalPagoExtra] = useState(() => {
-    return localStorage.getItem('finansmart_pago_extra') || '200';
-  });
-  
-  const [pagoUnicoSolaVez, setPagoUnicoSolaVez] = useState(() => {
-    return localStorage.getItem('finansmart_pago_unico') || '1500';
-  });
-
+  const [globalPagoExtra, setGlobalPagoExtra] = useState(() => localStorage.getItem('finansmart_pago_extra') || '200');
+  const [pagoUnicoSolaVez, setPagoUnicoSolaVez] = useState(() => localStorage.getItem('finansmart_pago_unico') || '1500');
   const [debtResult, setDebtResult] = useState(null);
   const [hayAmortizacionNegativa, setHayAmortizacionNegativa] = useState(false);
 
-  // --- EFECTO A: GUARDAR AUTOMÁTICAMENTE LAS DEUDAS CUANDO CAMBIEN ---
+  // Mostrar disclaimer al cargar (solo una vez por sesión)
+  useEffect(() => {
+    const accepted = sessionStorage.getItem('finansmart_disclaimer_accepted');
+    if (!accepted) setShowDisclaimer(true);
+  }, []);
+
+  const handleAcceptDisclaimer = () => {
+    sessionStorage.setItem('finansmart_disclaimer_accepted', 'true');
+    setShowDisclaimer(false);
+  };
+
   useEffect(() => {
     localStorage.setItem('finansmart_debts', JSON.stringify(debts));
-    
     let peligro = false;
     debts.forEach(d => {
       const bal = parseFloat(d.balance) || 0;
       const rate = ((parseFloat(d.interesAnual) || 0) / 100) / 12;
       const pmt = parseFloat(d.pagoMensual) || 0;
-      if (bal > 0 && pmt <= bal * rate) {
-        peligro = true;
-      }
+      if (bal > 0 && pmt <= bal * rate) peligro = true;
     });
     setHayAmortizacionNegativa(peligro);
   }, [debts]);
 
-  // --- EFECTO B: GUARDAR PARÁMETROS GLOBALES DE PAGO ---
-  useEffect(() => {
-    localStorage.setItem('finansmart_pago_extra', globalPagoExtra);
-  }, [globalPagoExtra]);
+  useEffect(() => { localStorage.setItem('finansmart_pago_extra', globalPagoExtra); }, [globalPagoExtra]);
+  useEffect(() => { localStorage.setItem('finansmart_pago_unico', pagoUnicoSolaVez); }, [pagoUnicoSolaVez]);
 
-  useEffect(() => {
-    localStorage.setItem('finansmart_pago_unico', pagoUnicoSolaVez);
-  }, [pagoUnicoSolaVez]);
+  const toggleLanguage = () => setLang(lang === 'es' ? 'en' : 'es');
 
-  const toggleLanguage = () => {
-    setLang(lang === 'es' ? 'en' : 'es');
-  };
+  const handleScoreChange = (e) => setScoreAnswers({ ...scoreAnswers, [e.target.name]: e.target.value });
 
-  const handleScoreChange = (e) => {
-    setScoreAnswers({ ...scoreAnswers, [e.target.name]: e.target.value });
+  const resetScoreForm = () => {
+    setScoreAnswers({ historial: '', utilizacion: 'auto', antiguedad: '', tipos: '', consultas: '' });
+    setReporteScore(null);
   };
 
   const handleDebtInputChange = (id, field, value) => {
@@ -249,7 +347,7 @@ export default function App() {
 
   const obtenerUtilizacionAutomatica = () => {
     const deudaTotal = debts.reduce((sum, d) => sum + (parseFloat(d.balance) || 0), 0);
-    const ratio = (deudaTotal / 40000) * 100; 
+    const ratio = (deudaTotal / 40000) * 100;
     if (ratio < 30) return 'bajo';
     if (ratio < 50) return 'moderado';
     if (ratio < 85) return 'alto';
@@ -267,15 +365,12 @@ export default function App() {
   const calcularCreditScore = (e) => {
     e.preventDefault();
     const { historial, utilizacion, antiguedad, tipos, consultas } = scoreAnswers;
-
     if (!historial || !utilizacion || !antiguedad || !tipos || !consultas) {
       alert(lang === 'es' ? "Por favor, responde todas las preguntas." : "Please answer all questions.");
       return;
     }
-
     const utilizacionReal = utilizacion === 'auto' ? obtenerUtilizacionAutomatica() : utilizacion;
     const maxPuntos = { historial: 192.5, utilizacion: 165, antiguedad: 82.5, tipos: 55, consultas: 55 };
-    
     const puntosTradicional = {
       historial: { excelente: 192.5, bueno: 154, regular: 96.25, malo: 38.5 }[historial],
       utilizacion: { bajo: 165, moderado: 132, alto: 66, critico: 16.5 }[utilizacionReal],
@@ -284,7 +379,6 @@ export default function App() {
       consultas: { ningun: 55, pocas: 38.5, muchas: 11 }[consultas]
     };
     const scoreTradicional = Math.round(300 + puntosTradicional.historial + puntosTradicional.utilizacion + puntosTradicional.antiguedad + puntosTradicional.tipos + puntosTradicional.consultas);
-
     const puntos10T = {
       historial: { excelente: 192.5, bueno: 145, regular: 85, malo: 25 }[historial],
       utilizacion: { bajo: 165, moderado: 140, alto: 80, critico: 15 }[utilizacionReal],
@@ -294,10 +388,9 @@ export default function App() {
     };
     const score10T = Math.round(300 + puntos10T.historial + puntos10T.utilizacion + puntos10T.antiguedad + puntos10T.tipos + puntos10T.consultas);
 
-    const dictamenTradicional = lang === 'es' 
+    const dictamenTradicional = lang === 'es'
       ? "Mide la solvencia estática ('foto fija'). Ideal para solicitudes tradicionales de tarjetas y préstamos de auto."
       : "Measures static creditworthiness ('snapshot'). Standard for credit cards and auto loan applications.";
-
     const dictamen10T = lang === 'es'
       ? "Analiza la película de los últimos 24 meses. Castiga severamente si arrastras balances de manera crónica sin amortizar."
       : "Analyzes the last 24 months of historical balances. Heavily penalizes carrying chronic revolving debt.";
@@ -315,12 +408,8 @@ export default function App() {
         detalle: lang === 'es' ? "Tu nivel de deuda actual está asfixiando tu puntaje. Liquidar balances liberará hasta 150 puntos." : "Your current debt level is suffocating your score. Paying down balances will release up to 150 points."
       });
     }
-
     setReporteScore({
-      scoreTradicional,
-      score10T,
-      dictamenTradicional,
-      dictamen10T,
+      scoreTradicional, score10T, dictamenTradicional, dictamen10T,
       consejos: consejosGenerados.length > 0 ? consejosGenerados : [
         { titulo: lang === 'es' ? "Optimización Avanzada" : "Advanced Optimization", detalle: lang === 'es' ? "Mantén tu utilización general por debajo del 10% para estabilidad bilateral." : "Keep overall utilization below 10% for bilateral stability." }
       ],
@@ -328,10 +417,34 @@ export default function App() {
         { nombre: 'Payment History', trad: puntosTradicional.historial, tend: puntos10T.historial, max: maxPuntos.historial },
         { nombre: 'Amounts Owed (Utilization)', trad: puntosTradicional.utilizacion, tend: puntos10T.utilizacion, max: maxPuntos.utilizacion },
         { nombre: 'Length of Credit History', trad: puntosTradicional.antiguedad, tend: puntos10T.antiguedad, max: maxPuntos.antiguedad },
-        { font: 'Credit Mix', trad: puntosTradicional.tipos, tend: puntos10T.tipos, max: maxPuntos.tipos },
+        { nombre: 'Credit Mix', trad: puntosTradicional.tipos, tend: puntos10T.tipos, max: maxPuntos.tipos },
         { nombre: 'New Credit (Inquiries)', trad: puntosTradicional.consultas, tend: puntos10T.consultas, max: maxPuntos.consultas },
       ]
     });
+  };
+
+  const exportarReporte = () => {
+    if (!reporteScore) return;
+    const lines = [
+      `FinanSmart - ${t.reportTitle}`,
+      `${lang === 'es' ? 'Fecha' : 'Date'}: ${new Date().toLocaleDateString()}`,
+      '',
+      `${t.traditionalModel}: ${reporteScore.scoreTradicional} [${obtenerRangoNominal(reporteScore.scoreTradicional).texto}]`,
+      `${t.trendedModel}: ${reporteScore.score10T} [${obtenerRangoNominal(reporteScore.score10T).texto}]`,
+      '',
+      '--- Desglose ---',
+      ...reporteScore.desglose.map(d => `${d.nombre}: FICO ${Math.round(d.trad)} | 10T ${Math.round(d.tend)} / Max ${d.max}`),
+      '',
+      '--- Estrategia ---',
+      ...reporteScore.consejos.map((c, i) => `${i + 1}. ${c.titulo}: ${c.detalle}`),
+      '',
+      `⚠️ ${lang === 'es' ? 'Este reporte es solo para fines educativos.' : 'This report is for educational purposes only.'}`
+    ];
+    const blob = new Blob([lines.join('\n')], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href = url;
+    a.download = `finansmart-fico-report-${Date.now()}.txt`; a.click();
+    URL.revokeObjectURL(url);
   };
 
   const calcularEstrategiaGlobal = (e) => {
@@ -340,16 +453,8 @@ export default function App() {
       alert(lang === 'es' ? "Corrige los pagos mínimos que no cubren los intereses antes de proceder." : "Fix minimum payments that don't cover interest before proceeding.");
       return;
     }
-
-    let activeReg = debts.map(d => ({
-      balance: parseFloat(d.balance) || 0,
-      r: ((parseFloat(d.interesAnual) || 0) / 100) / 12,
-      pmt: parseFloat(d.pagoMensual) || 0
-    })).filter(d => d.balance > 0);
-
-    let mesesRegular = 0;
-    let totalInteresesRegular = 0;
-
+    let activeReg = debts.map(d => ({ balance: parseFloat(d.balance) || 0, r: ((parseFloat(d.interesAnual) || 0) / 100) / 12, pmt: parseFloat(d.pagoMensual) || 0 })).filter(d => d.balance > 0);
+    let mesesRegular = 0, totalInteresesRegular = 0;
     while (activeReg.length > 0 && mesesRegular < 360) {
       mesesRegular++;
       activeReg = activeReg.filter(d => {
@@ -360,85 +465,100 @@ export default function App() {
         return d.balance > 0.01;
       });
     }
-
-    let activeAce = debts.map(d => ({
-      balance: parseFloat(d.balance) || 0,
-      r: ((parseFloat(d.interesAnual) || 0) / 100) / 12,
-      pmt: parseFloat(d.pagoMensual) || 0
-    })).filter(d => d.balance > 0)
-       .sort((a, b) => b.r - a.r);
-
-    let mesesAcelerado = 0;
-    let totalInteresesAcelerado = 0;
+    let activeAce = debts.map(d => ({ balance: parseFloat(d.balance) || 0, r: ((parseFloat(d.interesAnual) || 0) / 100) / 12, pmt: parseFloat(d.pagoMensual) || 0 })).filter(d => d.balance > 0).sort((a, b) => b.r - a.r);
+    let mesesAcelerado = 0, totalInteresesAcelerado = 0;
     const inyeccionMensualFija = parseFloat(globalPagoExtra) || 0;
     let pagoUnicoDisponible = parseFloat(pagoUnicoSolaVez) || 0;
-
     while (activeAce.length > 0 && mesesAcelerado < 360) {
       mesesAcelerado++;
       let bolsaPagoExtraMes = inyeccionMensualFija;
-
-      if (mesesAcelerado === 1 && pagoUnicoDisponible > 0) {
-        bolsaPagoExtraMes += pagoUnicoDisponible;
-      }
-
-      activeAce.forEach(d => {
-        const interesMes = d.balance * d.r;
-        totalInteresesAcelerado += interesMes;
-        d.balance += interesMes;
-      });
-
-      activeAce.forEach(d => {
-        const pagoMinimoEfectivo = Math.min(d.pmt, d.balance);
-        d.balance -= pagoMinimoEfectivo;
-      });
-
+      if (mesesAcelerado === 1 && pagoUnicoDisponible > 0) bolsaPagoExtraMes += pagoUnicoDisponible;
+      activeAce.forEach(d => { const interesMes = d.balance * d.r; totalInteresesAcelerado += interesMes; d.balance += interesMes; });
+      activeAce.forEach(d => { const pago = Math.min(d.pmt, d.balance); d.balance -= pago; });
       for (let d of activeAce) {
         if (d.balance > 0 && bolsaPagoExtraMes > 0) {
-          const pagoExtraEfectivo = Math.min(bolsaPagoExtraMes, d.balance);
-          d.balance -= pagoExtraEfectivo;
-          bolsaPagoExtraMes -= pagoExtraEfectivo;
+          const extra = Math.min(bolsaPagoExtraMes, d.balance); d.balance -= extra; bolsaPagoExtraMes -= extra;
         }
       }
-
       activeAce = activeAce.filter(d => d.balance > 0.01);
     }
-
     setDebtResult({
-      mesesRegular: mesesRegular,
-      interesesRegular: Math.max(0, totalInteresesRegular),
-      mesesAcelerado: mesesAcelerado,
-      interesesAcelerado: Math.max(0, totalInteresesAcelerado),
+      mesesRegular, interesesRegular: Math.max(0, totalInteresesRegular),
+      mesesAcelerado, interesesAcelerado: Math.max(0, totalInteresesAcelerado),
       mesesAhorrados: Math.max(0, mesesRegular - mesesAcelerado),
       dineroAhorrado: Math.max(0, totalInteresesRegular - totalInteresesAcelerado)
     });
   };
 
+  // ==========================================
+  // RENDER
+  // ==========================================
   return (
-    <div className="min-h-screen bg-slate-900 text-slate-100 font-sans antialiased">
-      
-      {/* GLOBAL HEADER */}
-      <header className="border-b border-slate-800 bg-slate-900/90 sticky top-0 z-50 backdrop-blur-md">
-        <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
+    <div className="min-h-screen bg-slate-950 text-slate-100 font-sans antialiased">
+      <style>{`
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideIn { from { opacity: 0; transform: translateX(-8px); } to { opacity: 1; transform: translateX(0); } }
+        .tab-active { background: linear-gradient(135deg, #4f46e5, #6366f1); box-shadow: 0 0 20px rgba(99,102,241,0.4); }
+        .card-glow:hover { box-shadow: 0 0 30px rgba(99,102,241,0.1); transition: box-shadow 0.3s; }
+        .score-card { animation: fadeInUp 0.4s ease-out; }
+        .btn-primary { background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); transition: all 0.2s; }
+        .btn-primary:hover { background: linear-gradient(135deg, #4338ca 0%, #6d28d9 100%); transform: translateY(-1px); box-shadow: 0 8px 20px rgba(99,102,241,0.35); }
+        .btn-primary:active { transform: translateY(0); }
+        .btn-secondary { background: rgba(99,102,241,0.1); border: 1px solid rgba(99,102,241,0.3); transition: all 0.2s; }
+        .btn-secondary:hover { background: rgba(99,102,241,0.2); border-color: rgba(99,102,241,0.5); }
+        .btn-danger { background: rgba(244,63,94,0.1); border: 1px solid rgba(244,63,94,0.25); transition: all 0.2s; }
+        .btn-danger:hover { background: rgba(244,63,94,0.2); }
+        .input-field { background: rgba(15,23,42,0.8); border: 1px solid rgba(51,65,85,0.8); transition: border-color 0.2s; }
+        .input-field:focus { border-color: #6366f1; outline: none; box-shadow: 0 0 0 3px rgba(99,102,241,0.15); }
+        .gradient-border { position: relative; }
+        .gradient-border::before { content: ''; position: absolute; inset: 0; border-radius: inherit; padding: 1px; background: linear-gradient(135deg, #6366f1, #8b5cf6, #06b6d4); -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); -webkit-mask-composite: xor; mask-composite: exclude; pointer-events: none; }
+        .progress-bar { transition: width 0.6s ease-out; }
+        .disclaimer-badge { background: linear-gradient(135deg, rgba(245,158,11,0.15), rgba(249,115,22,0.1)); border: 1px solid rgba(245,158,11,0.3); }
+      `}</style>
+
+      {/* MODAL DISCLAIMER */}
+      {showDisclaimer && <DisclaimerModal lang={lang} onAccept={handleAcceptDisclaimer} />}
+
+      {/* HEADER */}
+      <header className="border-b border-slate-800/70 bg-slate-950/95 sticky top-0 z-40 backdrop-blur-md">
+        {/* Barra de aviso educativo */}
+        <div className="disclaimer-badge text-center py-1.5 px-4">
+          <span className="text-[10px] text-amber-400/90 font-medium">
+            ⚠️ {lang === 'es' ? 'Herramienta educativa. No constituye asesoría financiera profesional.' : 'Educational tool. Does not constitute professional financial advice.'}
+          </span>
+        </div>
+        <div className="max-w-6xl mx-auto px-4 h-14 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="bg-gradient-to-tr from-indigo-500 to-indigo-600 p-2 rounded-xl">
-              <BarChart3 className="h-5 w-5 text-white" />
+            <div className="bg-gradient-to-tr from-indigo-500 via-purple-500 to-violet-600 p-2 rounded-xl shadow-lg shadow-indigo-500/20">
+              <BarChart3 className="h-4 w-4 text-white" />
             </div>
-            <span className="font-bold text-lg text-white">
-              {t.title} <span className="text-[10px] font-bold text-indigo-400 bg-indigo-500/10 border border-indigo-500/20 px-2 py-0.5 rounded-full ml-1">{t.version}</span>
-            </span>
+            <div className="flex items-center gap-2">
+              <span className="font-bold text-base text-white tracking-tight">{t.title}</span>
+              <span className="text-[9px] font-bold text-indigo-300 bg-indigo-500/10 border border-indigo-500/25 px-2 py-0.5 rounded-full">{t.version}</span>
+            </div>
           </div>
-          
-          <div className="flex items-center gap-4">
-            <nav className="flex gap-1 bg-slate-950 p-1 rounded-xl border border-slate-800">
-              <button onClick={() => setActiveTab('score')} className={`flex items-center gap-2 px-3 py-1.5 text-xs font-semibold rounded-lg transition-all ${activeTab === 'score' ? 'bg-indigo-600 text-white shadow-md' : 'text-slate-400 hover:text-slate-200'}`}>
+
+          <div className="flex items-center gap-3">
+            <nav className="flex gap-1 bg-slate-900 p-1 rounded-xl border border-slate-800">
+              <button onClick={() => setActiveTab('score')}
+                className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg transition-all ${activeTab === 'score' ? 'tab-active text-white' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'}`}>
                 <CreditCard className="h-3.5 w-3.5" /> {t.tabFico}
               </button>
-              <button onClick={() => setActiveTab('deuda')} className={`flex items-center gap-2 px-3 py-1.5 text-xs font-semibold rounded-lg transition-all ${activeTab === 'deuda' ? 'bg-indigo-600 text-white shadow-md' : 'text-slate-400 hover:text-slate-200'}`}>
+              <button onClick={() => setActiveTab('deuda')}
+                className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg transition-all ${activeTab === 'deuda' ? 'tab-active text-white' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'}`}>
                 <TrendingDown className="h-3.5 w-3.5" /> {t.tabDeudas}
               </button>
             </nav>
 
-            <button onClick={toggleLanguage} className="flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs px-3 py-1.5 rounded-xl transition font-bold text-slate-300">
+            <button onClick={() => setShowDisclaimer(true)}
+              className="flex items-center gap-1 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 text-amber-400 text-[10px] px-2.5 py-1.5 rounded-xl transition font-bold"
+              title={t.disclaimerTitle}>
+              <ShieldAlert className="h-3 w-3" />
+              <span className="hidden sm:inline">Aviso</span>
+            </button>
+
+            <button onClick={toggleLanguage}
+              className="flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs px-3 py-1.5 rounded-xl transition font-bold text-slate-300">
               <Globe className="h-3.5 w-3.5 text-indigo-400" />
               {lang === 'es' ? 'EN' : 'ES'}
             </button>
@@ -446,150 +566,141 @@ export default function App() {
         </div>
       </header>
 
-      {/* CONTENEDOR CENTRAL */}
+      {/* MAIN */}
       <main className="max-w-6xl mx-auto px-4 py-8">
-        
-        {/* PESTAÑA ANALIZADOR SCORE */}
+
+        {/* TAB: FICO SCORE */}
         {activeTab === 'score' && (
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-            <div className="lg:col-span-5 bg-slate-800/40 border border-slate-800 p-6 rounded-2xl h-fit">
-              <h2 className="text-sm font-bold flex items-center gap-2 mb-1 text-white"><Target className="text-indigo-400 h-4 w-4" /> {t.configTitle}</h2>
-              <p className="text-[11px] text-slate-400 mb-5">{t.configSub}</p>
 
-              <form onSubmit={calcularCreditScore} className="space-y-4">
-                <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1.5">{t.lblHistorial}</label>
-                  <select name="historial" value={scoreAnswers.historial} onChange={handleScoreChange} className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none">
-                    <option value="">{t.selDefault}</option>
-                    <option value="excelente">{t.h_excelente}</option>
-                    <option value="bueno">{t.h_bueno}</option>
-                    <option value="regular">{t.h_regular}</option>
-                    <option value="malo">{t.h_malo}</option>
-                  </select>
+            {/* FORMULARIO */}
+            <div className="lg:col-span-5">
+              <div className="gradient-border bg-slate-900/60 border border-slate-800 p-6 rounded-2xl card-glow">
+                <div className="flex items-center justify-between mb-1">
+                  <h2 className="text-sm font-bold flex items-center gap-2 text-white">
+                    <Target className="text-indigo-400 h-4 w-4" /> {t.configTitle}
+                  </h2>
+                  <button onClick={resetScoreForm}
+                    className="flex items-center gap-1 btn-secondary text-slate-400 hover:text-slate-200 px-2.5 py-1 rounded-lg text-[10px] font-bold">
+                    <RotateCcw className="h-3 w-3" /> {t.resetForm}
+                  </button>
                 </div>
+                <p className="text-[11px] text-slate-500 mb-5">{t.configSub}</p>
 
-                <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1.5">{t.lblUtilizacion}</label>
-                  <select name="utilizacion" value={scoreAnswers.utilizacion} onChange={handleScoreChange} className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-indigo-400 font-medium focus:outline-none">
-                    <option value="auto">🔄 {t.u_auto}</option>
-                    <option value="bajo">{t.u_bajo}</option>
-                    <option value="moderado">{t.u_mod}</option>
-                    <option value="alto">{t.u_alto}</option>
-                    <option value="critico">{t.u_critico}</option>
-                  </select>
-                </div>
+                <form onSubmit={calcularCreditScore} className="space-y-4">
+                  {[
+                    { label: t.lblHistorial, name: 'historial', options: [['excelente', t.h_excelente], ['bueno', t.h_bueno], ['regular', t.h_regular], ['malo', t.h_malo]] },
+                    { label: t.lblAntiguedad, name: 'antiguedad', options: [['larga', t.a_larga], ['media', t.a_media], ['corta', t.a_corta]] },
+                    { label: t.lblMix, name: 'tipos', options: [['multiples', t.m_optimo], ['soloUno', t.m_soloUno]] },
+                    { label: t.lblInquiries, name: 'consultas', options: [['ningun', t.i_0], ['pocas', t.i_pocas], ['muchas', t.i_muchas]] },
+                  ].map(({ label, name, options }) => (
+                    <div key={name}>
+                      <label className="block text-[11px] font-semibold text-slate-300 mb-1.5">{label}</label>
+                      <select name={name} value={scoreAnswers[name]} onChange={handleScoreChange}
+                        className="input-field w-full rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none">
+                        <option value="">{t.selDefault}</option>
+                        {options.map(([val, lbl]) => <option key={val} value={val}>{lbl}</option>)}
+                      </select>
+                    </div>
+                  ))}
 
-                <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1.5">{t.lblAntiguedad}</label>
-                  <select name="antiguedad" value={scoreAnswers.antiguedad} onChange={handleScoreChange} className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none">
-                    <option value="">{t.selDefault}</option>
-                    <option value="larga">{t.a_larga}</option>
-                    <option value="media">{t.a_media}</option>
-                    <option value="corta">{t.a_corta}</option>
-                  </select>
-                </div>
+                  <div>
+                    <label className="block text-[11px] font-semibold text-slate-300 mb-1.5">{t.lblUtilizacion}</label>
+                    <select name="utilizacion" value={scoreAnswers.utilizacion} onChange={handleScoreChange}
+                      className="input-field w-full rounded-xl px-3 py-2 text-xs text-indigo-400 font-medium focus:outline-none">
+                      <option value="auto">🔄 {t.u_auto}</option>
+                      <option value="bajo">{t.u_bajo}</option>
+                      <option value="moderado">{t.u_mod}</option>
+                      <option value="alto">{t.u_alto}</option>
+                      <option value="critico">{t.u_critico}</option>
+                    </select>
+                  </div>
 
-                <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1.5">{t.lblMix}</label>
-                  <select name="tipos" value={scoreAnswers.tipos} onChange={handleScoreChange} className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none">
-                    <option value="">{t.selDefault}</option>
-                    <option value="multiples">{t.m_optimo}</option>
-                    <option value="soloUno">{t.m_soloUno}</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1.5">{t.lblInquiries}</label>
-                  <select name="consultas" value={scoreAnswers.consultas} onChange={handleScoreChange} className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none">
-                    <option value="">{t.selDefault}</option>
-                    <option value="ningun">{t.i_0}</option>
-                    <option value="pocas">{t.i_pocas}</option>
-                    <option value="muchas">{t.i_muchas}</option>
-                  </select>
-                </div>
-
-                <button type="submit" className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 rounded-xl text-xs transition shadow-lg flex items-center justify-center gap-2 mt-4">
-                  {t.calcScore} <ArrowRight className="h-3.5 w-3.5" />
-                </button>
-              </form>
+                  <button type="submit"
+                    className="btn-primary w-full text-white font-bold py-2.5 rounded-xl text-xs flex items-center justify-center gap-2 mt-2">
+                    <Zap className="h-3.5 w-3.5" /> {t.calcScore} <ChevronRight className="h-3.5 w-3.5" />
+                  </button>
+                </form>
+              </div>
             </div>
 
-            {/* SECCIÓN ANALÍTICA DUAL */}
-            <div className="lg:col-span-7 space-y-6">
+            {/* RESULTADOS */}
+            <div className="lg:col-span-7 space-y-5">
               {reporteScore ? (
-                <div className="space-y-6">
-                  <div className="bg-slate-800/40 border border-slate-800 rounded-2xl p-6">
-                    <h3 className="text-xs font-bold tracking-wider uppercase flex items-center gap-2 text-indigo-400 mb-4 border-b border-slate-800 pb-3">
-                      <FileText className="h-4 w-4" /> {t.reportTitle}
-                    </h3>
+                <div className="space-y-5 score-card">
+                  {/* Scores Duales */}
+                  <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 card-glow">
+                    <div className="flex items-center justify-between mb-4 border-b border-slate-800/60 pb-3">
+                      <h3 className="text-xs font-bold tracking-wider uppercase flex items-center gap-2 text-indigo-400">
+                        <FileText className="h-4 w-4" /> {t.reportTitle}
+                      </h3>
+                      <button onClick={exportarReporte}
+                        className="flex items-center gap-1.5 btn-secondary text-emerald-400 px-3 py-1.5 rounded-xl text-[10px] font-bold">
+                        <Download className="h-3 w-3" /> {t.btnExportar}
+                      </button>
+                    </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                      <div className="bg-slate-950/60 border border-slate-800 p-4 rounded-xl text-center">
-                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{t.traditionalModel}</span>
-                        <h4 className="text-4xl font-black text-indigo-400 mt-2">{reporteScore.scoreTradicional}</h4>
-                        
-                        <div className={`text-xs font-bold mt-1 uppercase tracking-wide ${obtenerRangoNominal(reporteScore.scoreTradicional).color}`}>
-                          [{obtenerRangoNominal(reporteScore.scoreTradicional).texto}]
+                    <div className="grid grid-cols-2 gap-4 mb-5">
+                      <ScoreBadge score={reporteScore.scoreTradicional} label={t.traditionalModel} color="text-indigo-400" />
+                      <ScoreBadge score={reporteScore.score10T} label={t.trendedModel} color="text-emerald-400" />
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-3 mb-5">
+                      <div className="bg-indigo-500/5 border border-indigo-500/20 p-3 rounded-xl">
+                        <p className="text-[10px] text-slate-500 mb-1 uppercase font-bold tracking-wide">{t.traditionalModel}</p>
+                        <div className={`text-[11px] font-bold mb-1 ${obtenerRangoNominal(reporteScore.scoreTradicional).color}`}>
+                          {obtenerRangoNominal(reporteScore.scoreTradicional).texto}
                         </div>
-                        
-                        <p className="text-[11px] text-slate-400 mt-3 leading-relaxed">{reporteScore.dictamenTradicional}</p>
+                        <p className="text-[10px] text-slate-400 leading-relaxed">{reporteScore.dictamenTradicional}</p>
                       </div>
-
-                      <div className="bg-slate-950/60 border border-slate-800 p-4 rounded-xl text-center">
-                        <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-wider">{t.trendedModel}</span>
-                        <h4 className="text-4xl font-black text-emerald-400 mt-2">{reporteScore.score10T}</h4>
-                        
-                        <div className={`text-xs font-bold mt-1 uppercase tracking-wide ${obtenerRangoNominal(reporteScore.score10T).color}`}>
-                          [{obtenerRangoNominal(reporteScore.score10T).texto}]
+                      <div className="bg-emerald-500/5 border border-emerald-500/20 p-3 rounded-xl">
+                        <p className="text-[10px] text-slate-500 mb-1 uppercase font-bold tracking-wide">{t.trendedModel}</p>
+                        <div className={`text-[11px] font-bold mb-1 ${obtenerRangoNominal(reporteScore.score10T).color}`}>
+                          {obtenerRangoNominal(reporteScore.score10T).texto}
                         </div>
-                        
-                        <p className="text-[11px] text-slate-400 mt-3 leading-relaxed">{reporteScore.dictamen10T}</p>
+                        <p className="text-[10px] text-slate-400 leading-relaxed">{reporteScore.dictamen10T}</p>
                       </div>
                     </div>
 
-                    <div className="space-y-4">
-                      <h4 className="text-xs font-bold text-slate-300 tracking-wide uppercase border-b border-slate-800/50 pb-2">{t.impactTitle}</h4>
-                      {reporteScore.desglose.map((item, idx) => {
-                        const pctTrad = (item.trad / item.max) * 100;
-                        const pctTend = (item.tend / item.max) * 100;
-                        return (
-                          <div key={idx} className="space-y-1 bg-slate-950/30 p-3 rounded-xl border border-slate-800/50">
-                            <div className="flex justify-between text-xs font-semibold">
-                              <span className="text-slate-300 text-[11px]">{item.nombre || item.font}</span>
-                              <span className="text-slate-400 text-[10px]">{t.maxWeight}: {item.max}</span>
-                            </div>
-                            
-                            <div className="space-y-1 mt-1.5">
-                              <div className="flex justify-between text-[10px] text-slate-500">
-                                <span>{t.traditionalModel}</span>
-                                <span className="font-bold text-indigo-400">{Math.round(item.trad)} pts</span>
-                              </div>
-                              <div className="w-full bg-slate-900 h-1.5 rounded-full overflow-hidden">
-                                <div className="h-full bg-indigo-500 rounded-full" style={{ width: `${pctTrad}%` }}></div>
-                              </div>
-                            </div>
-
-                            <div className="space-y-1 mt-1">
-                              <div className="flex justify-between text-[10px] text-slate-500">
-                                <span>{t.trendedModel}</span>
-                                <span className="font-bold text-emerald-400">{Math.round(item.tend)} pts</span>
-                              </div>
-                              <div className="w-full bg-slate-900 h-1.5 rounded-full overflow-hidden">
-                                <div className="h-full bg-emerald-500 rounded-full" style={{ width: `${pctTend}%` }}></div>
-                              </div>
-                            </div>
+                    {/* Desglose */}
+                    <h4 className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-3">{t.impactTitle}</h4>
+                    <div className="space-y-3">
+                      {reporteScore.desglose.map((item, idx) => (
+                        <div key={idx} className="bg-slate-950/40 p-3 rounded-xl border border-slate-800/40">
+                          <div className="flex justify-between text-[11px] font-semibold mb-2">
+                            <span className="text-slate-300">{item.nombre}</span>
+                            <span className="text-slate-500 text-[10px]">{t.maxWeight}: {item.max}</span>
                           </div>
-                        );
-                      })}
+                          <div className="space-y-1.5">
+                            {[
+                              { label: 'FICO 8/9', val: item.trad, color: 'bg-indigo-500', text: 'text-indigo-400' },
+                              { label: 'FICO 10T', val: item.tend, color: 'bg-emerald-500', text: 'text-emerald-400' }
+                            ].map(({ label, val, color, text }) => (
+                              <div key={label}>
+                                <div className="flex justify-between text-[10px] text-slate-500 mb-0.5">
+                                  <span>{label}</span>
+                                  <span className={`font-bold ${text}`}>{Math.round(val)} pts</span>
+                                </div>
+                                <div className="w-full bg-slate-900 h-1.5 rounded-full overflow-hidden">
+                                  <div className={`h-full ${color} rounded-full progress-bar`} style={{ width: `${(val / item.max) * 100}%` }} />
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      ))}
                     </div>
                   </div>
 
-                  <div className="bg-slate-800/40 border border-slate-800 rounded-2xl p-6">
-                    <h4 className="text-xs font-bold text-indigo-400 mb-4 tracking-wide uppercase flex items-center gap-2"><Lightbulb className="h-4 w-4 text-amber-400" />{t.strategyTitle}</h4>
+                  {/* Estrategia */}
+                  <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 card-glow">
+                    <h4 className="text-xs font-bold text-indigo-400 mb-4 tracking-wide uppercase flex items-center gap-2">
+                      <Lightbulb className="h-4 w-4 text-amber-400" />{t.strategyTitle}
+                    </h4>
                     <div className="space-y-3">
                       {reporteScore.consejos.map((c, i) => (
-                        <div key={i} className="p-3.5 rounded-xl bg-slate-950/50 border border-slate-800 flex gap-3">
-                          <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-indigo-500/10 text-xs font-bold text-indigo-400 border border-indigo-500/20">{i + 1}</span>
+                        <div key={i} className="p-3.5 rounded-xl bg-gradient-to-r from-indigo-500/5 to-transparent border border-indigo-500/15 flex gap-3">
+                          <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-indigo-500/15 text-[10px] font-bold text-indigo-400 border border-indigo-500/30">{i + 1}</span>
                           <div>
                             <h5 className="text-xs font-bold text-slate-200 mb-0.5">{c.titulo}</h5>
                             <p className="text-[11px] text-slate-400 leading-relaxed">{c.detalle}</p>
@@ -600,30 +711,44 @@ export default function App() {
                   </div>
                 </div>
               ) : (
-                <div className="bg-slate-800/10 border border-slate-800 border-dashed rounded-2xl h-full min-h-[350px] flex flex-col items-center justify-center p-6 text-center">
-                  <FileText className="h-9 w-9 text-slate-700 mb-2" />
-                  <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider">{t.waitingData}</h4>
-                  <p className="text-xs text-slate-500 max-w-xs mt-1">{t.waitingSub}</p>
+                <div className="bg-slate-900/30 border border-slate-800 border-dashed rounded-2xl min-h-[400px] flex flex-col items-center justify-center p-6 text-center">
+                  <div className="bg-slate-800/50 p-4 rounded-2xl mb-4">
+                    <TrendingUp className="h-10 w-10 text-slate-600" />
+                  </div>
+                  <h4 className="text-sm font-bold text-slate-400">{t.waitingData}</h4>
+                  <p className="text-xs text-slate-600 max-w-xs mt-2">{t.waitingSub}</p>
+                  <div className="mt-6 flex gap-2">
+                    {['800+', '740-799', '670-739', '580-669', '<580'].map((r, i) => {
+                      const colors = ['bg-emerald-500/20 text-emerald-400 border-emerald-500/30', 'bg-teal-500/20 text-teal-400 border-teal-500/30', 'bg-amber-500/20 text-amber-400 border-amber-500/30', 'bg-orange-500/20 text-orange-400 border-orange-500/30', 'bg-rose-500/20 text-rose-400 border-rose-500/30'];
+                      return <span key={i} className={`text-[9px] font-bold px-2 py-1 rounded-lg border ${colors[i]}`}>{r}</span>;
+                    })}
+                  </div>
                 </div>
               )}
             </div>
           </div>
         )}
 
-        {/* PESTAÑA ACELERADOR DE DEUDA */}
+        {/* TAB: ACELERADOR DE DEUDA */}
         {activeTab === 'deuda' && (
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
             <div className="lg:col-span-6 space-y-4">
-              <div className="flex items-center justify-between bg-slate-800/20 p-4 rounded-xl border border-slate-800">
-                <h3 className="text-xs font-bold text-slate-300 uppercase tracking-wider">{t.carteraTitle}</h3>
-                <button onClick={agregarDeuda} className="flex items-center gap-1 bg-indigo-600/20 hover:bg-indigo-600/40 text-indigo-400 border border-indigo-500/30 px-3 py-1 rounded-xl text-xs font-bold transition">
+
+              {/* Header cartera */}
+              <div className="flex items-center justify-between bg-slate-900/60 p-4 rounded-xl border border-slate-800">
+                <h3 className="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center gap-2">
+                  <Wallet className="h-4 w-4 text-indigo-400" /> {t.carteraTitle}
+                </h3>
+                <button onClick={agregarDeuda}
+                  className="flex items-center gap-1.5 btn-secondary text-indigo-400 px-3 py-1.5 rounded-xl text-xs font-bold">
                   <Plus className="h-3.5 w-3.5" /> {t.btnAñadir}
                 </button>
               </div>
 
+              {/* Alerta amortización */}
               {hayAmortizacionNegativa && (
-                <div className="p-4 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-400 flex gap-3 items-start animate-pulse">
-                  <AlertTriangle className="h-5 w-5 shrink-0 mt-0.5" />
+                <div className="p-4 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-400 flex gap-3 items-start">
+                  <AlertTriangle className="h-5 w-5 shrink-0 mt-0.5 animate-pulse" />
                   <div>
                     <h5 className="text-xs font-bold">{t.alertaAmortizacion}</h5>
                     <p className="text-[11px] text-rose-300/80 mt-0.5 leading-relaxed">{t.alertaAmortizacionDesc}</p>
@@ -633,74 +758,113 @@ export default function App() {
 
               <form onSubmit={calcularEstrategiaGlobal} className="space-y-3">
                 {debts.map((debt) => (
-                  <div key={debt.id} className="bg-slate-800/40 border border-slate-800 p-4 rounded-xl space-y-3">
+                  <div key={debt.id} className="bg-slate-900/60 border border-slate-800 p-4 rounded-xl space-y-3 card-glow">
                     <div className="flex justify-between items-center border-b border-slate-800/60 pb-2">
-                      <input type="text" value={debt.nombre} onChange={(e) => setDebts(debts.map(d => d.id === debt.id ? { ...d, nombre: e.target.value } : d))} className="bg-transparent border-none font-bold text-xs text-indigo-400 focus:outline-none w-2/3" />
-                      {debts.length > 1 && (<button type="button" onClick={() => eliminarDeuda(debt.id)} className="text-slate-500 hover:text-rose-400 transition"><Trash2 className="h-3.5 w-3.5" /></button>)}
+                      <input type="text" value={debt.nombre}
+                        onChange={(e) => setDebts(debts.map(d => d.id === debt.id ? { ...d, nombre: e.target.value } : d))}
+                        className="bg-transparent border-none font-bold text-xs text-indigo-400 focus:outline-none w-2/3" />
+                      {debts.length > 1 && (
+                        <button type="button" onClick={() => eliminarDeuda(debt.id)}
+                          className="btn-danger text-rose-400 p-1.5 rounded-lg transition">
+                          <Trash2 className="h-3.5 w-3.5" />
+                        </button>
+                      )}
                     </div>
                     <div className="grid grid-cols-3 gap-3">
-                      <div>
-                        <label className="block text-[10px] text-slate-400 font-bold mb-1">{t.lblMonto}</label>
-                        <input type="text" value={debt.balance} onChange={(e) => handleDebtInputChange(debt.id, 'balance', e.target.value)} className="w-full bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-white focus:border-indigo-500 focus:outline-none font-semibold" required />
-                      </div>
-                      <div>
-                        <label className="block text-[10px] text-slate-400 font-bold mb-1">{t.lblInteres}</label>
-                        <input type="text" value={debt.interesAnual} onChange={(e) => handleDebtInputChange(debt.id, 'interesAnual', e.target.value)} className="w-full bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-white focus:border-indigo-500 focus:outline-none font-semibold" required />
-                      </div>
-                      <div>
-                        <label className="block text-[10px] text-slate-400 font-bold mb-1">{t.lblPagoMin}</label>
-                        <input type="text" value={debt.pagoMensual} onChange={(e) => handleDebtInputChange(debt.id, 'pagoMensual', e.target.value)} className="w-full bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-white focus:border-indigo-500 focus:outline-none font-semibold" required />
-                      </div>
+                      {[['balance', t.lblMonto], ['interesAnual', t.lblInteres], ['pagoMensual', t.lblPagoMin]].map(([field, label]) => (
+                        <div key={field}>
+                          <label className="block text-[10px] text-slate-500 font-bold mb-1">{label}</label>
+                          <input type="text" value={debt[field]}
+                            onChange={(e) => handleDebtInputChange(debt.id, field, e.target.value)}
+                            className="input-field w-full rounded-lg px-2.5 py-1.5 text-xs text-white font-semibold" required />
+                        </div>
+                      ))}
                     </div>
                   </div>
                 ))}
 
-                <div className="bg-indigo-500/5 border border-indigo-500/20 p-4 rounded-xl mt-4 space-y-3">
+                {/* Inyecciones */}
+                <div className="bg-gradient-to-br from-indigo-500/8 to-violet-500/5 border border-indigo-500/20 p-4 rounded-xl mt-2 space-y-3">
                   <div>
-                    <label className="block text-xs font-bold text-indigo-300 mb-1">{t.lblInyeccionMensual}</label>
-                    <input type="text" value={globalPagoExtra} onChange={(e) => setGlobalPagoExtra(e.target.value.replace(/[^0-9.]/g, ''))} className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-1.5 text-xs font-bold text-indigo-400 focus:outline-none focus:border-indigo-500" />
+                    <label className="block text-xs font-bold text-indigo-300 mb-1.5">{t.lblInyeccionMensual}</label>
+                    <input type="text" value={globalPagoExtra}
+                      onChange={(e) => setGlobalPagoExtra(e.target.value.replace(/[^0-9.]/g, ''))}
+                      className="input-field w-full rounded-xl px-3 py-2 text-xs font-bold text-indigo-400" />
                   </div>
                   <div>
-                    <label className="block text-xs font-bold text-emerald-400 mb-1 flex items-center gap-1"><Zap className="h-3.5 w-3.5" />{t.lblInyeccionUnica}</label>
-                    <input type="text" value={pagoUnicoSolaVez} onChange={(e) => setPagoUnicoSolaVez(e.target.value.replace(/[^0-9.]/g, ''))} className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-1.5 text-xs font-bold text-emerald-400 focus:outline-none focus:border-emerald-500" />
+                    <label className="block text-xs font-bold text-emerald-400 mb-1.5 flex items-center gap-1.5">
+                      <Zap className="h-3.5 w-3.5" />{t.lblInyeccionUnica}
+                    </label>
+                    <input type="text" value={pagoUnicoSolaVez}
+                      onChange={(e) => setPagoUnicoSolaVez(e.target.value.replace(/[^0-9.]/g, ''))}
+                      className="input-field w-full rounded-xl px-3 py-2 text-xs font-bold text-emerald-400" />
                   </div>
                 </div>
-                
-                <button type="submit" className="w-full bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 text-white text-xs font-bold py-2.5 rounded-xl transition shadow-lg">
-                  {t.btnCalcularDeudas}
+
+                <button type="submit"
+                  className="btn-primary w-full text-white text-xs font-bold py-3 rounded-xl flex items-center justify-center gap-2">
+                  <TrendingDown className="h-4 w-4" /> {t.btnCalcularDeudas}
                 </button>
               </form>
             </div>
 
-            {/* PANEL LATERAL DE RESULTADOS */}
+            {/* RESULTADOS DEUDAS */}
             <div className="lg:col-span-6 space-y-4">
               {debtResult ? (
-                <>
+                <div className="score-card space-y-4">
                   <div className="grid grid-cols-2 gap-4">
-                    <div className="bg-emerald-950/20 border border-emerald-500/20 p-4 rounded-xl">
-                      <span className="text-[10px] text-emerald-400 uppercase font-bold tracking-wider">{t.ahorroInteres}</span>
-                      <h4 className="text-2xl font-black mt-1 text-emerald-400">${debtResult.dineroAhorrado.toLocaleString('en-US', { maximumFractionDigits: 2 })}</h4>
+                    <div className="bg-emerald-950/30 border border-emerald-500/25 p-4 rounded-xl card-glow">
+                      <div className="flex items-center gap-2 mb-2">
+                        <div className="bg-emerald-500/15 p-1.5 rounded-lg"><DollarSign className="h-3.5 w-3.5 text-emerald-400" /></div>
+                        <span className="text-[10px] text-emerald-400 uppercase font-bold tracking-wider">{t.ahorroInteres}</span>
+                      </div>
+                      <h4 className="text-2xl font-black text-emerald-400">${debtResult.dineroAhorrado.toLocaleString('en-US', { maximumFractionDigits: 0 })}</h4>
                     </div>
-                    <div className="bg-indigo-950/20 border border-indigo-500/20 p-4 rounded-xl">
-                      <span className="text-[10px] text-indigo-400 uppercase font-bold tracking-wider">{t.tiempoSalvado}</span>
-                      <h4 className="text-2xl font-black mt-1 text-indigo-400">{debtResult.mesesAhorrados} {t.meses}</h4>
-                    </div>
-                  </div>
-                  
-                  <div className="bg-slate-800/40 border border-slate-800 p-5 rounded-2xl">
-                    <h4 className="text-xs font-bold text-slate-300 uppercase tracking-wide mb-3">{t.resumenProyeccion}</h4>
-                    <div className="space-y-3 text-xs">
-                      <div className="flex justify-between py-2 border-b border-slate-800"><span className="text-slate-400">{t.tiempoReg}</span><span className="font-semibold text-slate-200">{debtResult.mesesRegular} {t.meses}</span></div>
-                      <div className="flex justify-between py-2 border-b border-slate-800"><span className="text-indigo-400 font-semibold">{t.tiempoAce}</span><span className="font-bold text-indigo-400">{debtResult.mesesAcelerado} {t.meses}</span></div>
-                      <div className="flex justify-between py-2 border-b border-slate-800"><span className="text-slate-400">{t.interesReg}</span><span className="font-semibold text-rose-400">${debtResult.interesesRegular.toLocaleString('en-US', { maximumFractionDigits: 2 })}</span></div>
-                      <div className="flex justify-between py-2"><span className="text-indigo-400 font-semibold">{t.interesAce}</span><span className="font-bold text-indigo-400">${debtResult.interesesAcelerado.toLocaleString('en-US', { maximumFractionDigits: 2 })}</span></div>
+                    <div className="bg-indigo-950/30 border border-indigo-500/25 p-4 rounded-xl card-glow">
+                      <div className="flex items-center gap-2 mb-2">
+                        <div className="bg-indigo-500/15 p-1.5 rounded-lg"><Zap className="h-3.5 w-3.5 text-indigo-400" /></div>
+                        <span className="text-[10px] text-indigo-400 uppercase font-bold tracking-wider">{t.tiempoSalvado}</span>
+                      </div>
+                      <h4 className="text-2xl font-black text-indigo-400">{debtResult.mesesAhorrados} <span className="text-sm font-semibold">{t.meses}</span></h4>
                     </div>
                   </div>
-                </>
+
+                  <div className="bg-slate-900/60 border border-slate-800 p-5 rounded-2xl card-glow">
+                    <h4 className="text-xs font-bold text-slate-300 uppercase tracking-wide mb-4">{t.resumenProyeccion}</h4>
+                    <div className="space-y-2 text-xs">
+                      {[
+                        { label: t.tiempoReg, value: `${debtResult.mesesRegular} ${t.meses}`, cls: 'text-slate-300' },
+                        { label: t.tiempoAce, value: `${debtResult.mesesAcelerado} ${t.meses}`, cls: 'text-indigo-400 font-bold' },
+                        { label: t.interesReg, value: `$${debtResult.interesesRegular.toLocaleString('en-US', { maximumFractionDigits: 0 })}`, cls: 'text-rose-400' },
+                        { label: t.interesAce, value: `$${debtResult.interesesAcelerado.toLocaleString('en-US', { maximumFractionDigits: 0 })}`, cls: 'text-indigo-400 font-bold' },
+                      ].map(({ label, value, cls }, i) => (
+                        <div key={i} className={`flex justify-between py-2.5 ${i < 3 ? 'border-b border-slate-800/60' : ''}`}>
+                          <span className="text-slate-400">{label}</span>
+                          <span className={cls}>{value}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Barra de progreso visual */}
+                  <div className="bg-slate-900/60 border border-slate-800 p-4 rounded-xl">
+                    <p className="text-[10px] text-slate-500 uppercase font-bold mb-2">{lang === 'es' ? 'Reducción de Tiempo (%)' : 'Time Reduction (%)'}</p>
+                    <div className="w-full bg-slate-800 h-3 rounded-full overflow-hidden">
+                      <div className="h-full bg-gradient-to-r from-indigo-500 to-emerald-500 rounded-full progress-bar"
+                        style={{ width: `${Math.min(100, (debtResult.mesesAhorrados / Math.max(1, debtResult.mesesRegular)) * 100)}%` }} />
+                    </div>
+                    <p className="text-right text-[11px] font-bold text-emerald-400 mt-1">
+                      {Math.round((debtResult.mesesAhorrados / Math.max(1, debtResult.mesesRegular)) * 100)}% {lang === 'es' ? 'más rápido' : 'faster'}
+                    </p>
+                  </div>
+                </div>
               ) : (
-                <div className="bg-slate-800/10 border border-slate-800 border-dashed rounded-2xl h-full min-h-[300px] flex flex-col items-center justify-center p-6 text-center">
-                  <DollarSign className="h-9 w-9 text-slate-700 mb-2" />
-                  <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider">{lang === 'es' ? 'Proyección Inactiva' : 'Projection Inactive'}</h4>
+                <div className="bg-slate-900/30 border border-slate-800 border-dashed rounded-2xl min-h-[350px] flex flex-col items-center justify-center p-6 text-center">
+                  <div className="bg-slate-800/50 p-4 rounded-2xl mb-4">
+                    <DollarSign className="h-10 w-10 text-slate-600" />
+                  </div>
+                  <h4 className="text-sm font-bold text-slate-400">{lang === 'es' ? 'Proyección Inactiva' : 'Projection Inactive'}</h4>
+                  <p className="text-xs text-slate-600 mt-2">{lang === 'es' ? 'Ingresa tus deudas y calcula la estrategia óptima.' : 'Enter your debts and calculate the optimal strategy.'}</p>
                 </div>
               )}
             </div>
@@ -708,8 +872,16 @@ export default function App() {
         )}
       </main>
 
-      <footer className="border-t border-slate-800 text-center py-6 text-[10px] text-slate-600">
-        <p>{t.footerText}</p>
+      {/* FOOTER */}
+      <footer className="border-t border-slate-800/60 py-6 mt-8">
+        <div className="max-w-6xl mx-auto px-4 text-center space-y-2">
+          <p className="text-[10px] text-slate-600">{t.footerText}</p>
+          <div className="inline-flex items-center gap-1.5 bg-amber-500/8 border border-amber-500/20 px-3 py-1.5 rounded-full">
+            <Info className="h-3 w-3 text-amber-500/70" />
+            <p className="text-[10px] text-amber-500/70 font-medium">{t.footerDisclaimer}</p>
+          </div>
+          <p className="text-[10px] text-slate-700">{lang === 'es' ? 'Los puntajes son estimaciones educativas. Consulta a un asesor certificado para decisiones financieras.' : 'Scores are educational estimates. Consult a certified advisor for financial decisions.'}</p>
+        </div>
       </footer>
     </div>
   );
